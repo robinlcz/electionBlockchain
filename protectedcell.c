@@ -61,9 +61,7 @@ void printCellProtected(CellProtected* listProtectedCell) {
 
 void deleteCellProtected(CellProtected* c) {
     // Supprime une cellule de déclaration signée
-    free(c->data->pKey);
-    free(c->data->sign->tab);
-    free(c->data->sign);
+    freeProtected(c->data);
     free(c);
 }
 

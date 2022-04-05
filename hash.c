@@ -35,11 +35,30 @@ HashTable* create_hashtable(CellKey *keys, int size) {
     CellKey* ptCellKey = keys;
     while(ptCellKey) {
         int pos = hash_function(ptCellKey->data,size);
-        while(retHashTable->tab[pos] != NULL) {
-            pos++;
+        if(pos == -1) {
+            return retHashTable;
         }
-        retHashTable->tab[pos] = create_hashcell(ptCellKey->data);
+        retHashTable->(*tab)[pos] = ptCellKey;
         ptCellKey = ptCellKey->next;
     }
     return retHashTable;
+}
+
+void delete_hashtable(HashTable *t) {
+    for(int i = 0; i < size; i++) {
+        free(t->(*tab)[i]->key);
+        free(t->(*tab)[i]);
+    }
+    free(t->tab);
+    free(t);
+}
+
+Key* compute_winner(CellProtected* dcl, CellKey* candidates, CellKey* voters, int sizeC, int sizeV); {
+    HashTable *hashTableCandidates = create_hashtable(candidates,sizeC);
+    HashTable *hashTableVoters = create_hashtable(voters,sizeV);
+    keepValidCellProtected(dcl); // to prevent from mistakes
+    CellProtected *pointerDcl = dcl;
+    while(pointerDcl) {
+
+    }
 }

@@ -64,6 +64,12 @@ void freeProtected(Protected* pr) {
     if(pr == NULL) {
         return;
     }
+    if(pr->pKey != NULL) {
+        free(pr->pKey);
+    }
+    if(pr->mess != NULL) {
+        free(pr->mess);
+    }
     if(pr->sign != NULL) {
         freeSignature(pr->sign);
     }
