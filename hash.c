@@ -27,7 +27,7 @@ int find_position(HashTable *t, Key* key) {
     return pos;
 }
 
-HashTable* create_hashtable(CellKey *keys, int size) {
+HashTable* create_hashtable(CellKey *keys, int size) { // To fix 
     if(!size) {return NULL;}
     HashTable *retHashTable = (HashTable*)malloc(sizeof(HashTable));
     retHashTable->size = size;
@@ -38,7 +38,8 @@ HashTable* create_hashtable(CellKey *keys, int size) {
         if(pos == -1) {
             return retHashTable;
         }
-        retHashTable->(*tab)[pos] = ptCellKey;
+        HashCell *tempHashCell = create_hashcell(ptCellKey->data);
+        retHashTable->(*tab)[pos] = tempHashCell;
         ptCellKey = ptCellKey->next;
     }
     return retHashTable;
@@ -59,6 +60,15 @@ Key* compute_winner(CellProtected* dcl, CellKey* candidates, CellKey* voters, in
     keepValidCellProtected(dcl); // to prevent from mistakes
     CellProtected *pointerDcl = dcl;
     while(pointerDcl) {
-
+        char *buffCandidate = (char*)calloc(256,sizeof(char));
+        char *buffVoter = (char*)calloc(256,sizeof(char));
+        sscanf((pointerDcl->data)->mess,"%s %s",buffVoter,buffCandidate);
+        Key *keyCandidate = str_to_key(buffCandidate);
+        Key *keyVoter = str_to_key(buffVoter)
+        if(hashTableVoters->(*tab)->)
+        free(keyCandidate);
+        free(keyVoter);
+        free(buffCandidate);
+        free(voter);
     }
 }
