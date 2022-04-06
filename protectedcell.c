@@ -6,6 +6,10 @@ CellProtected* create_cell_protected(Protected* pr) {
         return NULL;
     }
     CellProtected* resCellProtected = (CellProtected *)malloc(sizeof(CellProtected));
+    if(resCellProtected == NULL) {
+        printf("Erreur dans l'allocation d'une cellule de protected\n");
+        return NULL;
+    }
     resCellProtected->data = pr;
     resCellProtected->next = NULL;
     return resCellProtected;

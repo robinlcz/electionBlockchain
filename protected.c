@@ -4,6 +4,11 @@
 Protected* init_protected(Key* pKey, char* mess,Signature* sgn) {
     // Initialise une déclaration signée à partir d'un clé, un message et une signature
     Protected* retProtected = (Protected*)malloc(sizeof(Protected));
+    if(retProtected == NULL) {
+        printf("Erreur dans l'allocation mémoire d'un protected\n");
+        return NULL;
+    }
+    
     if(pKey == NULL) {
         printf("Clé publique invalide \n");
         return NULL;
@@ -32,10 +37,18 @@ bool verify(Protected* pr) {
 char* protected_to_str(Protected* pro) {
     // Renvoie la représentation chaine de caractère d'une déclaration signée
     char* buff = (char*)calloc(256,sizeof(char));
+    if(buff == NULL) {
+        printf("Erreur dans l'allocation mémoire d'un string\n");
+        return NULL;
+    }
     char *tempKeyToStr = key_to_str(pro->pKey);
     char *tempSignToStr = signature_to_str(pro->sign);
     sprintf(buff,"%s %s %s", tempKeyToStr, pro->mess,tempSignToStr);
     char *retStr = (char*)malloc(sizeof(char)*strlen(buff)+1);
+    if(retStr == NULL) {
+        printf("Erreur dans l'allocation mémoire d'un string\n");
+        return NULL;
+    }
     strcpy(retStr,buff);
     free(buff);
     free(tempSignToStr);
@@ -46,6 +59,10 @@ char* protected_to_str(Protected* pro) {
 Protected* str_to_protected(char* str) {
     // Génère une déclaration signée à partir de sa représentation chaine de caractere
     Protected* retPro = (Protected*)malloc(sizeof(Protected));
+    if(retPro == NULL) {
+        printf("Erreur dans l'allocation mémoire d'un protected\n");
+        return NULL;
+    }
     char strkey[30];
     char mess[30];
     char strsign[50];

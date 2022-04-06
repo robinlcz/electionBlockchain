@@ -22,12 +22,19 @@ void init_pair_keys(Key* pKey,Key* sKey, long low_size, long up_size) {
 char* key_to_str(Key* key) {
     // Renvoie la représentation en chaine de caractère d'une clé
     char *buff = (char *)calloc(256,sizeof(char));
+    if(buff == NULL) {
+        printf("Erreur d'allocation mémoire\n");
+        return NULL;
+    }
     char*keyHex;
     if(sprintf(buff,"(%lx,%lx)", key->keyValue, key->N) < 0) {
         printf("Erreur d'ecriture \n");
         return NULL;
     }
     keyHex = (char *)malloc(sizeof(char)*strlen(buff)+1);
+    if(keyHex == NULL) {
+        printf("Erreur d'allocation mémoire.");
+    }
     strcpy(keyHex, buff);
     free(buff);
     return keyHex;
@@ -36,6 +43,10 @@ char* key_to_str(Key* key) {
 Key* str_to_key(char* str) {
     // Génère une clé à partir de sa représentation chaine de caractère
     Key *resKey = (Key*)malloc(sizeof(Key));
+    if(resKey == NULL) {
+        printf("Erreur dans l'allocation mémoire d'une Key\n");
+        return NULL;
+    }
     long tmpVal, tmpN;
     if(sscanf(str,"(%lx,%lx)", &tmpVal, &tmpN) != 2) {
         printf("Erreur de format dans la chaine de caractère\n");
@@ -47,5 +58,8 @@ Key* str_to_key(char* str) {
 
 Key** init_tab_key(int size) {
     Key** tab = (Key**)malloc(sizeof(Key*)*size);
+    if(tab == NULL) {
+        printf("Erreur dans l'allocation d'un tableau de Key\n");
+    }
     return tab;
 }

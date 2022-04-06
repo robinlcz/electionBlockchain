@@ -21,6 +21,10 @@ long* encrypt(char *chaine, long s, long n) {
     }
     char *tmp = chaine;
     long *res = malloc(sizeof(long)*(strlen(chaine)+1));
+    if(res == NULL) {
+        printf("Erreur dans l'allocation d'un tableau de long\n");
+        return NULL;
+    }
     int i = 0;
     while(*tmp) {
         res[i] = modpow(*tmp,s,n);
@@ -39,6 +43,10 @@ char *decrypt(long *crypted, int size, long u, long n) {
         return NULL;
     }
     char *res = malloc(sizeof(char)*size+1);
+    if(res == NULL) {
+        printf("Erreur dans l'allocation d'un string \n");
+    }
+    
     for(int i = 0; i < size; i++) {
         res[i] = (char)modpow(crypted[i],u,n);
     }

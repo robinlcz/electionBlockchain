@@ -1,5 +1,7 @@
 #ifndef HASH_H
 #define HASH_H
+#include "protectedcell.h"
+#include "cellkey.h"
 
 typedef struct hashcell{
     Key *key;

@@ -24,6 +24,10 @@ void generate_random_data(int nv, int nc) {
     FILE *fc = fopen("candidates.txt","w");
     FILE *fd = fopen("declarations.txt","w");
     int* tabIndice = (int*)calloc(nv,sizeof(int));
+    if(tabIndice == NULL) {
+        printf("Erreur dans l'allocation d'un tableau d'indice, impossible de générer des candidats. \n");
+        return;
+    }
     Key* tab_public_keys[nv];
     Key* tab_secret_keys[nv];
     Key* tab_candidate_keys[nc];
