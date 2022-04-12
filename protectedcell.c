@@ -63,6 +63,23 @@ void printCellProtected(CellProtected* listProtectedCell) {
     }
 }
 
+void fprintCellProtected(FILE *f,CellProtected* listProtectedCell) {
+    // Affiche une liste chainée de déclaration signée
+    if(listProtectedCell == NULL) {
+        printf("Liste vide rien à afficher\n");
+        return;
+    }
+    CellProtected *ptProtectedCell = listProtectedCell;
+    while(ptProtectedCell != NULL) {
+        if(ptProtectedCell->data != NULL) {
+            char *str = protected_to_str(ptProtectedCell->data);
+            fprintf(f,"%s\n", str);
+            free(str);
+        }
+        ptProtectedCell = ptProtectedCell->next;
+    }
+}
+
 void deleteCellProtected(CellProtected* c) {
     // Supprime une cellule de déclaration signée
     freeProtected(c->data);

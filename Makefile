@@ -1,6 +1,12 @@
 all: crabe.o rsa.o main.o mainTestK.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o
 	gcc -o main main.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o -lm
 
+mainwin: mainwin.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o
+	gcc -o mainwin mainwin.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o -lm
+	
+hash.o: hash.c
+	gcc -c hash.c
+
 protectedcell.o: protectedcell.c
 	gcc -c protectedcell.c
 

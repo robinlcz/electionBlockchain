@@ -7,6 +7,7 @@ typedef struct cellProtected{
     struct cellProtected *next;
 }CellProtected;
 
+void fprintCellProtected(FILE *f,CellProtected* listProtectedCell);
 CellProtected* create_cell_protected(Protected* pr);
 CellProtected* read_protectedCell();
 void printCellProtected(CellProtected* listCellProtected);
