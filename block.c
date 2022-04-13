@@ -1,16 +1,20 @@
-#include "block.h"
-#include "protected.h"
+#include "header/block.h"
+#include "header/protected.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <openssl/sha.h>
 
 void fprintblock(FILE *f, Block *block) {
     if(f == NULL) {
         printf("Fichier en argument invalide \n");
-        return NULL;
+        return;
     }
-    if(b == NULL) {
+    if(block == NULL) {
         printf("Block en argument invalide \n");
-        return NULL;
+        return;
     }
-    printf("(%lx,%lx)\n)",block->key->keyValue, block->key->N);
+    printf("(%lx,%lx)\n)",block->author->keyValue, block->author->N);
     fprintCellProtected(f,block->votes);
     printf("%s\n", block->hash);
     printf("%s\n", block->previous_hash);
@@ -74,25 +78,39 @@ char *block_to_str(Block *block) {
         printf("Argument invalide\n");
         return NULL;
     }
+    char *strCP = (char *)malloc(sizeof(char)*10000);
+    CellProtected *pointerCP = block->votes;
+    while(pointerCP) {
+        char *temp = protected_to_str(pointerCP->data);
+        strcat(strCP,temp);
+        free(temp);
+        pointerCP = pointerCP->next;
+    }
     char *retStr = (char *)malloc(sizeof(char)*256);
     char *buff = key_to_str(block->author);
-    sprintf(retStr,"Author : %s \n previous_hash : %s \n current hash : %s \n nonce : %d\n", buff, block->previous_hash, block->hash,block->nonce);
+    sprintf(retStr,"%s %s %s %d\n", buff, block->previous_hash,strCP,block->nonce);
     free(buff);
     return retStr;
 }
 
 
+
+
 int compute_proof_of_work(Block *b, int d) {
     b->nonce = 0;
-    // On créer un string contenant l'ensemble de nos déclarations :
-    
-    CellProtected *pointerCP = b->votes;
-    while(pointerCP) {
-        
-    }
+    int cpt = 0; 
     while(1) {
-        char *strBlock = block_to_str(b);
-
+        unsigned char *strCP = block_to_str(b);
+        unsigned char *hash = SHA256(strCP,strlen(strCP),0);
+        unsigned char temp[strlen(hash)];
+        strcpy(temp,hash);
+        temp[4] = '\0';
+        if(strcmp(temp,"0000") == 0 || cpt == 150) {
+            printf("Hash trouvé : %s\n", hash);
+            break;
+        }
         b->nonce++;
+        free(strCP);
     }
+    return b->nonce;
 }

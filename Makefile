@@ -3,7 +3,13 @@ all: crabe.o rsa.o main.o keys.o sign.o protected.o cellkey.o protectedcell.o ha
 
 mainwin: mainwin.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o
 	gcc -g -o mainwin mainwin.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o -lm
-	
+
+mainblock: mainblock.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o block.o
+	gcc -c -o mainblock mainblock.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o block.o -lm -lssl -lcrypto
+
+block.o: block.c
+	gcc -g -c block.c
+
 hash.o: hash.c
 	gcc -g -c hash.c
 

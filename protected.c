@@ -26,12 +26,9 @@ Protected* init_protected(Key* pKey, char* mess,Signature* sgn) {
 bool verify(Protected* pr) {
     // Vérifie la validité de la signature de la déclaration signée pr
     char *strtemp = decrypt(pr->sign->tab,pr->sign->tabSize,pr->pKey->keyValue,pr->pKey->N);
-    bool ret = false;
-    if(strcmp(strtemp,pr->mess) == 0) {
-        ret = true;
-    }
+    bool ret = strcmp(strtemp,pr->mess);
     free(strtemp);
-    return ret;
+    return !ret;
 }
 
 char* protected_to_str(Protected* pro) {
