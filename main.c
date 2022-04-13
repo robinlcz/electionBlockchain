@@ -61,8 +61,9 @@ void generate_random_data(int nv, int nc) {
         Protected *voteProtected = init_protected(tab_public_keys[i],vote,voteSign);
         char *declaration = protected_to_str(voteProtected);
         fprintf(fd,"%s\n", declaration);
-        free(vote);
-        freeProtected(voteProtected);
+        freeSignature(voteSign);
+        free(voteProtected->mess);
+        free(voteProtected);
         free(declaration);
     }
     for(int i = 0; i < nv; i++) {
