@@ -3,11 +3,12 @@
 CellKey * create_cell_key(Key* key) {
     // Crée et alloue une cellule de liste chaîne
     if(key == NULL) {
+        printf("[create_cell_key] Clé en argument invalide\n");
         return NULL;
     }
     CellKey *res = (CellKey *)malloc(sizeof(CellKey));
     if(res == NULL) {
-        printf("Erreur d'allocation mémoire pour la cellule \n");
+        printf("[create_cell_key] Erreur d'allocation mémoire pour la cellule \n");
         return NULL;
     }
     res->data = key;
@@ -19,7 +20,7 @@ CellKey* headInsertCellKey(CellKey* CK, Key* key) {
     // Fait une insertion en tête de liste d'une cellule contenant une clé
     CellKey* tmp = create_cell_key(key);
     if(tmp == NULL) {
-        printf("Erreur dans la création d'une nouvelle cellule");
+        printf("[headInsertCellKey] Erreur dans la création d'une nouvelle cellule");
     }
     tmp->next = CK;
     return tmp;
@@ -28,7 +29,7 @@ CellKey* headInsertCellKey(CellKey* CK, Key* key) {
 CellKey* read_public_keys(FILE *f) {
     // Créer une liste chainée de clé à partir d'un fichier f
     if(f == NULL) {
-        printf("Erreur de fichier\n");
+        printf("[read_public_keys] Erreur de fichier\n");
     }
     char buff[256];
     CellKey *res = NULL;
@@ -41,7 +42,7 @@ CellKey* read_public_keys(FILE *f) {
 void print_list_keys(CellKey* LCK) {
     // Affiche une liste chainée de clé
     if(LCK == NULL) {
-        printf("Liste vide il n'y a rien a afficher\n");
+        printf("[print_list_keys] Liste vide il n'y a rien a afficher\n");
     }
     CellKey* ptCK = LCK;
     while(ptCK && ptCK->data) {

@@ -124,3 +124,19 @@ CellProtected *keepValidCellProtected(CellProtected* listCellProtected) {
     }
     return listCellProtected;
 }
+
+
+CellProtected *fusion(CellProtected* listCellProtected, CellProtected* listCellProtected2) {
+    // On va raccorder le dernier élément de listCellProtected avec le premier de listCellProtected2 de listCellProtected
+    CellProtected* cour = listCellProtected;
+    CellProtected* pred = NULL;
+    while(cour != NULL) {
+        pred = cour;
+        cour = cour->next;
+    }
+    // Ici nous avons l'adresse de dernier element stockées dans pred
+    pred->suivant = listCellProtected2;
+    return listCellProtected;
+    // L'opération pourrait être fait en O(1) avec une liste doublement chainées
+    // Nous sommes actuellement en O(len(listCellProtected))
+}

@@ -8,7 +8,7 @@ mainblock: mainblock.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protect
 	gcc -c -o mainblock mainblock.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o block.o -lm -lssl -lcrypto
 
 block.o: block.c
-	gcc -g -c block.c
+	gcc -g -c block.c -lcrypto -lssl 
 
 hash.o: hash.c
 	gcc -g -c hash.c

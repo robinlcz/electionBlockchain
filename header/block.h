@@ -14,5 +14,4 @@ void fprintblock(FILE *f, Block* block);
 Block *freadblock(FILE *f);
 char *block_to_str(Block* block); 
 int compute_proof_of_work(Block *b, int d);
-
 #endif

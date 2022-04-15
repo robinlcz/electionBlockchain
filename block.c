@@ -7,11 +7,11 @@
 
 void fprintblock(FILE *f, Block *block) {
     if(f == NULL) {
-        printf("Fichier en argument invalide \n");
+        printf("[fprintblock] Fichier en argument invalide \n");
         return;
     }
     if(block == NULL) {
-        printf("Block en argument invalide \n");
+        printf("[fprintblock] Block en argument invalide \n");
         return;
     }
     printf("(%lx,%lx)\n)",block->author->keyValue, block->author->N);
@@ -23,13 +23,13 @@ void fprintblock(FILE *f, Block *block) {
 
 Block *freadblock(FILE *f) {
     if(f == NULL) {
-        printf("Fichier invalide\n");
+        printf("[freadblock] Fichier invalide\n");
         return NULL;
     }
 
     Block *retBlock = (Block *)malloc(sizeof(Block));
     if(retBlock == NULL) {
-        printf("Erreur d'allocation mémoire \n");
+        printf("[freadblock] Erreur d'allocation mémoire \n");
         return NULL;
     }
     char *buff = (char*)calloc(256,sizeof(char));
@@ -75,7 +75,7 @@ Block *freadblock(FILE *f) {
 
 char *block_to_str(Block *block) {
     if(block == NULL) {
-        printf("Argument invalide\n");
+        printf("[block_to_str] Argument invalide\n");
         return NULL;
     }
     char *strCP = (char *)malloc(sizeof(char)*10000);
