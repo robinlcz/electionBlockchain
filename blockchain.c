@@ -21,7 +21,8 @@ int update_height(CellTree *father, CellTree *child) {
     if(father->height < child->height+1) {
         father->height = child->height+1;
         return 1;
-    } else { return 0; }
+    }
+    return 0;
 }
 
 void add_child(CellTree *father; CellTree* child) {

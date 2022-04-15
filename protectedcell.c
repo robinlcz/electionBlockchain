@@ -1,4 +1,5 @@
 #include "header/protectedcell.h"
+#include <stdio.h>
 
 CellProtected* create_cell_protected(Protected* pr) {
     // Créer une cellule contenant une déclarations signées
@@ -69,10 +70,15 @@ void fprintCellProtected(FILE *f,CellProtected* listProtectedCell) {
         printf("Liste vide rien à afficher\n");
         return;
     }
+    char *str; 
     CellProtected *ptProtectedCell = listProtectedCell;
     while(ptProtectedCell != NULL) {
         if(ptProtectedCell->data != NULL) {
-            char *str = protected_to_str(ptProtectedCell->data);
+            str = protected_to_str(ptProtectedCell->data);
+            if(str == NULL) {
+                printf("[fprintCellProtected] Erreur de chaine de caractère");
+                return;
+            }
             fprintf(f,"%s\n", str);
             free(str);
         }
@@ -135,7 +141,7 @@ CellProtected *fusion(CellProtected* listCellProtected, CellProtected* listCellP
         cour = cour->next;
     }
     // Ici nous avons l'adresse de dernier element stockées dans pred
-    pred->suivant = listCellProtected2;
+    pred->next = listCellProtected2;
     return listCellProtected;
     // L'opération pourrait être fait en O(1) avec une liste doublement chainées
     // Nous sommes actuellement en O(len(listCellProtected))

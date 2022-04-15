@@ -1,9 +1,5 @@
 #include "header/block.h"
 #include "header/protected.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <openssl/sha.h>
 
 void fprintblock(FILE *f, Block *block) {
     if(f == NULL) {
@@ -40,13 +36,13 @@ Block *freadblock(FILE *f) {
 
     // Récupération de la clé de l'auteur
     fgets(buff,256,f);
-    buff[strlen(buff)-1] = '\0';
+    buff[strlen(buff)-1] = '\n';
     retBlock->author = str_to_key(buff);
 
     // Récupération des déclarations de votes signées : 
     while(1) {
         fgets(buff,256,f);
-        buff[strlen(buff)-1] = '\0';
+        buff[strlen(buff)-1] = '\n';
         if(sscanf("%s %s %s", buffKeyVoter,buffKeyCandidate,buffSign) == 3) {
             Protected *pr = init_protected(str_to_key(buffKeyVoter),buffKeyCandidate,str_to_signature(buffSign));
             headInsertCellProtected(pr,CP);
@@ -78,12 +74,19 @@ char *block_to_str(Block *block) {
         printf("[block_to_str] Argument invalide\n");
         return NULL;
     }
-    char *strCP = (char *)malloc(sizeof(char)*10000);
+    char *strCP = (char *)malloc(sizeof(char)*256);
+
+
     CellProtected *pointerCP = block->votes;
+
     while(pointerCP) {
         char *temp = protected_to_str(pointerCP->data);
-        strcat(strCP,temp);
-        free(temp);
+        realloc(strCP,strlen(strCP)+strlen(temp));
+        if(strCP == NULL) {
+            printf("[block_to_str] Erreur de realloc");
+            return NULL;
+        }
+        sprintf(strCP,"%s%s", strCP,temp);
         pointerCP = pointerCP->next;
     }
     char *retStr = (char *)malloc(sizeof(char)*256);
@@ -94,9 +97,10 @@ char *block_to_str(Block *block) {
 }
 
 
-
-
 int compute_proof_of_work(Block *b, int d) {
+    if(b == NULL) {
+        printf("[compute_proof_of_work] Adresse du block non valide\n");
+    }
     b->nonce = 0;
     int cpt = 0; 
     while(1) {
@@ -109,7 +113,9 @@ int compute_proof_of_work(Block *b, int d) {
             printf("Hash trouvé : %s\n", hash);
             break;
         }
+        cpt++;
         b->nonce++;
+        free(hash);
         free(strCP);
     }
     return b->nonce;

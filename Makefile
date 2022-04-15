@@ -4,8 +4,8 @@ all: crabe.o rsa.o main.o keys.o sign.o protected.o cellkey.o protectedcell.o ha
 mainwin: mainwin.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o
 	gcc -g -o mainwin mainwin.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o -lm
 
-mainblock: mainblock.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o block.o
-	gcc -c -o mainblock mainblock.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o block.o -lm -lssl -lcrypto
+mainblock: mainblock.o hash.o block.o
+	gcc -g -o mainblock mainblock.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o block.o -lm -lssl -lcrypto
 
 block.o: block.c
 	gcc -g -c block.c -lcrypto -lssl 
@@ -40,4 +40,3 @@ main.o: header/rsa.h
 clean:
 	rm -f *.o
 	rm -f main
-	rm -f *.txt

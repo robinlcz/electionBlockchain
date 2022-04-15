@@ -2,8 +2,10 @@
 
 int main() {
     FILE *f = fopen("temp.txt","r");
+    FILE *fp = fopen("res.txt","w");
     printf("0\n");
     Block *BlockTest = freadblock(f);
+    fprintblock(fp,BlockTest);
     printf("1\n");
     printf("%s\n", block_to_str(BlockTest));
     printf("2\n");
