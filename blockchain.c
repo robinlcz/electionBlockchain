@@ -102,3 +102,19 @@ CellTree *last_node(CellTree* tree) {
     }
     return lastCellTree;
 }
+
+void submit_vote(Protected *p) {
+    if(p == NULL) {
+        printf("[submit_vote] Erreur argument non initialisé\n");
+        return;
+    }
+    FILE *pending_vote = fopen("Pending_votes.txt","a");
+    char *str = protected_to_str(p);
+    fprintf(pending_vote, "%s\n", str);
+    free(str);
+}
+
+void create_block(CellTree* tree, Key* author, int d) {
+    CellTree *feuille = last_node(tree);
+    
+}

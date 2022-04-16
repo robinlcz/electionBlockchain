@@ -34,6 +34,9 @@ crabe.o: header/crabe.h crabe.c
 rsa.o: header/crabe.h rsa.c
 	gcc -g -c rsa.c
 
+mainwin.o:
+	gcc -g -c mainwin.c
+
 main.o: header/rsa.h
 	gcc -g -c main.c
 

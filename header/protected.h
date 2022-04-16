@@ -13,4 +13,5 @@ bool verify(Protected* pr);
 char *protected_to_str(Protected* pro);
 Protected* str_to_protected(char* str);
 void freeProtected(Protected* pr);
+
 #endif

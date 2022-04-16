@@ -34,17 +34,19 @@ int find_position(HashTable *t, Key* key) {
 HashTable* create_hashtable(CellKey *keys, int size) { // To fix 
     if(!size) {return NULL;}
     HashTable *retHashTable = (HashTable*)malloc(sizeof(HashTable));
+    if(retHashTable == NULL) {
+        printf("[create_hashtable] Erreur d'allocation d'une table de hachage\n");    
+        return NULL;
+    }
     retHashTable->size = size;
     retHashTable->tab = (HashCell**)malloc(sizeof(CellKey*));
-    CellKey* ptCellKey = keys;
-    while(ptCellKey) {
-        int pos = hash_function(ptCellKey->data,size);
+    while(keys) {
+        int pos = find_position(retHashTable,keys->data);
         if(pos == -1) {
             return retHashTable;
         }
-        HashCell *tempHashCell = create_hashcell(ptCellKey->data);
-        (retHashTable->tab)[pos] = tempHashCell;
-        ptCellKey = ptCellKey->next;
+        retHashTable->tab[pos] = create_hashcell(keys->data);      
+        keys = keys->next;
     }
     return retHashTable;
 }
@@ -62,28 +64,33 @@ Key* compute_winner(CellProtected* dcl, CellKey* candidates, CellKey* voters, in
     HashTable *hashTableCandidates = create_hashtable(candidates,sizeC);
     HashTable *hashTableVoters = create_hashtable(voters,sizeV);
     keepValidCellProtected(dcl); // On élimine les déclarations de vote non valides
-    CellProtected *pointerDcl = dcl;
     HashCell *winner;
+    if(hashTableVoters == NULL || hashTableCandidates == NULL) {
+        printf("[compute_winner] Erreur d'allocation d'un table de hachage\n");
+    }
+
 
     // Pour chaque déclaration on récupère la clé du votant et la clé du candidat pour pouvoir itérer dans les tables de hachages.
-    while(pointerDcl) {
+    while(dcl) {
         char *buffCandidate = (char*)calloc(50,sizeof(char));
         char *buffVoter = (char*)calloc(50,sizeof(char));
-        sscanf((pointerDcl->data)->mess,"%s %s",buffVoter,buffCandidate);
+        sscanf((dcl->data)->mess,"%s %s",buffVoter,buffCandidate);
         Key *keyCandidate = str_to_key(buffCandidate);
         Key *keyVoter = str_to_key(buffVoter);
+
         if((hashTableVoters->tab[hash_function(keyVoter,sizeV)])->val == 0) {
             (hashTableVoters->tab[hash_function(keyVoter,sizeV)])->val++;
             (hashTableCandidates->tab[hash_function(keyCandidate,sizeC)])->val++;
         } else {
             printf("Le citoyen (%lx,%lx) à déjà voté \n", keyVoter->keyValue, keyVoter->N);
-            continue;
         }
+
+
         free(keyCandidate);
         free(keyVoter);
         free(buffCandidate);
         free(buffVoter);
-        return winner->key;
+        dcl = dcl->next;
     }
 
     // On cherche dans la table de Hachage des candidats lequel à le plus de vote.

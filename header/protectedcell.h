@@ -15,6 +15,7 @@ void deleteCellProtected(CellProtected* c);
 void deleteListCellProtected(CellProtected* listCellProtected);
 CellProtected *headInsertCellProtected(Protected* pr, CellProtected* listProtected);
 CellProtected *keepValidCellProtected(CellProtected* listCellProtected);
+CellProtected *fusion(CellProtected* listCellProtected, CellProtected* listCellProtected2);
 
 
 #endif

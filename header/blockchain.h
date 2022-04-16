@@ -17,5 +17,6 @@ void print_tree(CellTree *racine);
 void delete_node(CellTree* node);
 void delete_tree(CellTree* racine);
 CellTree* highest_child(CellTree* cell);
+void submit_vote(Protected *p);
 
 #endif
