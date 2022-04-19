@@ -1,7 +1,7 @@
 #include "header/blockchain.h"
 #include <math.h>
 
-CellTree* create_note(Block *b) {
+CellTree* create_node(Block *b) {
     CellTree *retCT = (CellTree*)malloc(sizeof(CellTree));
     if(retCT == NULL) {
         printf("[create_node] Erreur d'allocation mémoire");
@@ -71,12 +71,14 @@ void delete_node(CellTree* node) {
     free(node);
 }
 
-void delete_tree(CellTree* racine) {
+void delete_tree(CellTree* racine,bool father) {
     if(racine == NULL) {
         return;
     }
-    delete_tree(racine->nextBro);
-    delete_tree(racine->firstChild);
+    if(father) {
+        delete_tree(racine->nextBro,false);
+    }
+    delete_tree(racine->firstChild,false);
     delete_node(racine);
 }
 

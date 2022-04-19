@@ -4,8 +4,14 @@ all: crabe.o rsa.o main.o keys.o sign.o protected.o cellkey.o protectedcell.o ha
 mainwin: mainwin.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o
 	gcc -g -o mainwin mainwin.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o -lm
 
-mainblock: mainblock.o hash.o block.o
+mainblock: mainblock.o hash.o block.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o
 	gcc -g -o mainblock mainblock.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o block.o -lm -lssl -lcrypto
+
+maintree: maintree.o blockchain.o hash.o block.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o
+	gcc -g -o maintree maintree.o blockchain.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o block.o -lm -lssl -lcrypto
+
+blockchain.o: blockchain.c
+	gcc -g -c blockchain.c -lcrypto -lssl
 
 block.o: block.c
 	gcc -g -c block.c -lcrypto -lssl 

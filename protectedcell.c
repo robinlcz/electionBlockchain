@@ -84,6 +84,7 @@ void fprintCellProtected(FILE *f,CellProtected* listProtectedCell) {
         }
         ptProtectedCell = ptProtectedCell->next;
     }
+    printf("\n");
 }
 
 void deleteCellProtected(CellProtected* c) {

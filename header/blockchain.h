@@ -10,12 +10,12 @@ typedef struct _block_tree_cell{
     int height;
 }CellTree;
 
-CellTree* create_note(Block *b);
+CellTree* create_node(Block *b);
 int update_height(CellTree *father, CellTree *child);
 void add_child(CellTree *father; CellTree* child);
 void print_tree(CellTree *racine);
 void delete_node(CellTree* node);
-void delete_tree(CellTree* racine);
+void delete_tree(CellTree* racine, bool father);
 CellTree* highest_child(CellTree* cell);
 void submit_vote(Protected *p);
 

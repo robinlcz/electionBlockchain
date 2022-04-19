@@ -17,11 +17,16 @@ int hash_function(Key* key ,int size) {
 
 int find_position(HashTable *t, Key* key) {
     if(t == NULL) {
+        printf("[find_position] Erreur Hashtable invalide\n");
+        return -1;
+    }
+    if(key == NULL) {
+        printf("[find_position] Erreur clé invalide\n");
         return -1;
     }
     int pos = hash_function(key,t->size);
     int cpt = 0;
-    while((key->keyValue != ((t->tab[pos])->key)->keyValue && key->N != ((t->tab[pos])->key)->keyValue || (t->tab[pos] == NULL))) {
+    while(t->tab[pos] != NULL && ( key->keyValue != t->tab[pos]->key->keyValue && key->N != t->tab[pos]->key->N )) {
         ++pos%(t->size);
         cpt++;
         if (cpt > t->size) {
