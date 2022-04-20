@@ -18,7 +18,7 @@ int main() {
     double temps_cpu; 
 
 
-    for(int i = 0; i < 2; i++) {
+    for(int i = 0; i < 3; i++) {
         temps_initial = clock();
         compute_proof_of_work(BlockTest,i);
         temps_final=clock();
@@ -29,6 +29,7 @@ int main() {
             printf("Block non vérifié\n");
         }
         fprintf(ft,"%d %f\n",i, temps_cpu);
+        free(BlockTest->hash);
     }
     fclose(f);
     fclose(fp);

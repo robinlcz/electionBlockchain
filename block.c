@@ -31,6 +31,9 @@ Block *freadblock(FILE *f) {
     }
     
     char *buff = (char*)calloc(256,sizeof(char));
+    if(buff == NULL) {
+        printf("[freadblock] Erreur d'allocation buffer\n");
+    }
     Key* authorKey;
     unsigned char* previousHash;
     unsigned char* currentHash;
@@ -43,6 +46,8 @@ Block *freadblock(FILE *f) {
     authorKey = str_to_key(buff);
 
     // Récupération des déclarations de votes signées :
+    // CellProtected *last;
+    // CellProtected *CP = last;
     while(1) {
         fgets(buff,256,f);
         buff[strlen(buff)-1] = '\n';
@@ -50,10 +55,12 @@ Block *freadblock(FILE *f) {
             buff[strlen(buff)-1] = '\0';
             Protected *pr = str_to_protected(buff);
             if(pr == NULL) {
-                currentHash = (unsigned char*)strdup(buff);
+                currentHash = (unsigned char*)buff;
                 break;
             }
-            CP = headInsertCellProtected(pr,CP);
+            // last = create_cell_protected(pr);
+            // last = last->next;
+            CP = headInsertCellProtected(pr,CP);  // attention à l'ordre
         }
     }
 
@@ -66,8 +73,8 @@ Block *freadblock(FILE *f) {
 
     retBlock->author = authorKey;
     retBlock->votes = CP;
-    retBlock->hash = currentHash;
-    retBlock->previous_hash = previousHash;
+    retBlock->hash = strdup(currentHash);
+    retBlock->previous_hash = strdup(previousHash);
     retBlock->nonce = nonce;
 
     free(buff);
@@ -132,11 +139,11 @@ void compute_proof_of_work(Block *b, int d) {
     while(true) {
         unsigned char *strCP = (unsigned char*)block_to_str2(b);
         unsigned char *hash = str_to_hash(strCP);
-        printf("%d\n", b->nonce);
         showHash(strCP);
         if(compte_zeros(hash,d) == true) {
             b->hash = strdup(hash);
-            printf("Hash trouvé : %d \t", b->nonce);
+            
+            printf("Hash trouvé : %d \n", b->nonce);
             free(strCP);
             break;
         }
@@ -202,9 +209,9 @@ void* showHash(const char *hash) {
 bool verify_block(Block *b, int d) {
     unsigned char* bloStr = block_to_str2(b);
     showHash(bloStr);
-    unsigned char * bloStr2 = SHA256(bloStr,strlen(bloStr),0);
     free(bloStr);
-    if(strcmp(bloStr2,b->hash) == 0 && compte_zeros(bloStr2,d)) {
+    bloStr = SHA256(bloStr,strlen(bloStr),0);
+    if(strcmp(bloStr,b->hash) == 0 && compte_zeros(bloStr,d)) {
         return true;
     }
     return false;
@@ -215,6 +222,8 @@ void delete_block(Block *b) {
         printf("[verify_block] Erreur block null");
         return;
     }
+    deleteListCellProtected(b->votes);
+    /*
     if(b->votes != NULL) {
         CellProtected *cour = b->votes;
         CellProtected *pred = NULL;
@@ -223,7 +232,7 @@ void delete_block(Block *b) {
             cour = cour->next;
             free(pred);
         }
-    }
+    } */
     free(b->hash);
     free(b->previous_hash);
     free(b);

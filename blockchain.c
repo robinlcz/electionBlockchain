@@ -25,15 +25,16 @@ int update_height(CellTree *father, CellTree *child) {
     return 0;
 }
 
-void add_child(CellTree *father; CellTree* child) {
+void add_child(CellTree *father, CellTree* child) {
     if(father == NULL || child == NULL) { return; }
     CellTree* pointerFather = father;
-    CellTree *pointerCT = child;:
-    if(father->child == NULL) {
-        father->child = child;
+    CellTree* pointerCT = child;
+    child->father = father;
+    if(father->firstChild == NULL) {
+        father->firstChild = child;
     } else {
         // On cherche le premier frère libre
-        pointerCT = father->child;
+        pointerCT = father->firstChild;
         while(pointerCT != NULL) {
             pointerCT = pointerCT->nextBro;
         }
@@ -54,7 +55,10 @@ void print_tree(CellTree *racine) {
     }
 
     // On affiche le noeud courant 
-    printf("Height : %d, \t Hash : %s\n", racine->height,racine->block->hash);
+    printf("Height : %d, \t Hash : ", racine->height);
+    unsigned char* tempBlock = block_to_str2(racine->block);
+    showHash(tempBlock);
+    free(tempBlock);
 
     // On fait un appel récursif sur nextBro et firstChild
     print_tree(racine->firstChild);
@@ -63,10 +67,12 @@ void print_tree(CellTree *racine) {
 
 void delete_node(CellTree* node) {
     if(node == NULL) {
+        printf("[delete_node] node is null \n");
         return;
     }
-    node->firstChild->father = NULL;
-    node->father->fistChild = node->nextBro;
+    if(node->father != NULL) {
+        node->father->firstChild = node->nextBro;
+    }
     delete_block(node->block);
     free(node);
 }
@@ -75,7 +81,7 @@ void delete_tree(CellTree* racine,bool father) {
     if(racine == NULL) {
         return;
     }
-    if(father) {
+    if(!father) {
         delete_tree(racine->nextBro,false);
     }
     delete_tree(racine->firstChild,false);
