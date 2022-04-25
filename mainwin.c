@@ -75,17 +75,14 @@ void generate_random_data(int nv, int nc){
         char* cpr= protected_to_str(pr);
         // printf("pr= %s\n",cpr);
         fprintf(declarations, "%s\n",cpr);
-        free(pkey);
-        free(skey);
-        free(mess);
-        freeSignature(signE);
         freeProtected(pr);
+        free(skey);
         free(cpr);
     
     }
-
-    // free de tabcandidats
-    free(tabcandidats);
+    for(int i = 0; i < nc; i++) {
+        free(tabcandidats[i]);
+    }
     fclose(keys);
     fclose(declarations);
 }
@@ -95,9 +92,6 @@ int main(int argc, char** argv){
     generate_random_data(100,2);
 
     // tests exercice 5
-    // CellKey* LKC =  read_public_keys("candidates.txt");
-    // print_list_keys(LKC);
-    // delete_list_keys(LKC);
     
     CellProtected* declarations= read_protectedCell();
     printf("\nliste declarations:\n");
