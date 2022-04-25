@@ -93,7 +93,7 @@ char *block_to_str(Block *block) {
 
     while(pointerCP) {
         char *temp = protected_to_str(pointerCP->data);
-        sprintf(strCP,"%s\n%s", strCP,temp);
+        sprintf(strCP,"%s\n%s", temp,strCP);
         pointerCP = pointerCP->next;
         free(temp);
     }
@@ -194,6 +194,7 @@ unsigned char* str_to_hash(const char *hash) {
         sprintf(tmp, "%02x", str[i]);
         strcat(str,tmp);
     }
+    strcat(str,ret);
     free(ret);
     return str;
 }
