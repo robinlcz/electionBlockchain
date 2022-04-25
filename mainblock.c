@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     double temps_cpu; 
 
 
-    for(int i = 0; i < atoi(argv[1]); i++) {
+    for(int i = 0; i <= atoi(argv[1]); i++) {
         temps_initial = clock();
         compute_proof_of_work(BlockTest,i);
         temps_final=clock();
@@ -28,13 +28,14 @@ int main(int argc, char **argv) {
         } else {
             printf("Block non vérifié\n");
         }
+        printf("%s\n", block_to_str(BlockTest));
         fprintf(ft,"%d %f\n",i, temps_cpu);
-        free(BlockTest->hash);
+        // free(BlockTest->hash);
     }
     fclose(f);
     fclose(fp);
     fclose(ft);
-    free(bts);
-    free(BlockTest->author);
-    delete_block(BlockTest);
+    // free(bts);
+    //free(BlockTest->author);
+    // delete_block(BlockTest);
 }

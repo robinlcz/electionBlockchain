@@ -26,7 +26,7 @@ char* key_to_str(Key* key) {
         printf("Erreur d'allocation mémoire\n");
         return NULL;
     }
-    char*keyHex;
+    char* keyHex;
     if(sprintf(buff,"(%lx,%lx)", key->keyValue, key->N) < 0) {
         printf("Erreur d'ecriture \n");
         return NULL;

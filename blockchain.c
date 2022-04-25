@@ -121,44 +121,63 @@ void submit_vote(Protected *p) {
     char *str = protected_to_str(p);
     fprintf(pending_vote, "%s\n", str);
     free(str);
+    fclose(pending_vote);
 }
 
 void create_block(CellTree* tree, Key* author, int d){
-    Block* block=(Block*)malloc(sizeof(Block));
+    Block* newBlock=(Block*)malloc(sizeof(Block));
     CellProtected* cp= read_protectedCell("Pending_votes.txt");
     remove("Pending_votes.txt");
-    block->votes= cp;
+    printCellProtected(cp);
+    newBlock->votes= cp;
     Key* auteur= (Key*)malloc(sizeof(Key));
     init_key(auteur,author->keyValue,author->N);
-    block->author=auteur;
-    CellTree* t= last_node(tree);
-    Block* lastBlock= t->block;
-    block->previous_hash=lastBlock->hash;
-    compute_proof_of_work(block,d);
+    newBlock->author=auteur;
+    Block* lastBlock;
+    if (tree==NULL){
+        lastBlock= NULL;
+        newBlock->previous_hash=(unsigned char*)"0";
+        newBlock->hash = (unsigned char*)"0";
+        compute_proof_of_work(newBlock,d);
+        printf("HASH HASH HASH : %s\n", newBlock->hash);
+        tree= create_node(newBlock);
+    }else{
+        CellTree* t = last_node(tree);
+        lastBlock=t->block;
+        newBlock->previous_hash=lastBlock->hash;
+        compute_proof_of_work(newBlock,d);
+        add_child(t,create_node(newBlock));
+    }
+
     FILE* f= fopen("Pending_block.txt","w");
-    fprintblock(f,block);  
+    fprintblock(f,newBlock);
+    fclose(f);
 }
+
 void add_block(int d , char* name){
     FILE* f= fopen("Pending_block.txt","r");
     Block* block= freadblock(f);
     char nomfic[256];
     fclose(f);
-    remove("Pending_block.txt");
-    if (block!=NULL){
-        if (verify_block(block,d)==true){
-            strcpy(nomfic,"./Blockchain/");
+    // remove("Pending_block.txt");
+    if(block){
+        if(verify_block(block,d)){
+            strcpy(nomfic,"Blockchain/");
             strcat(nomfic,name);
             // on suppose que le repertoire BlockChain existe deja
             FILE* name= fopen(nomfic,"w");
             if (name!=NULL){
+                printf("Ya");
                 fprintblock(name,block);
                 fclose(name);
-            }
+            } else {printf("Yo\n");}
+        } else {
+            printf("Block non vérifié\n");
         }
-        delete_block(block);
+        // delete_block(block);
     }
-
 }
+
 CellTree* read_tree(){
     // on suppose que la taille du tableau est superieur au nombre de fichier lu dans Blockchain
     CellTree** T = (CellTree**)calloc(256,sizeof(CellTree*));

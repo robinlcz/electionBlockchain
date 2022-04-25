@@ -185,13 +185,11 @@ int main() {
     delete_list_keys(listKeys);
 
     // Affichage et stockage d'une liste chainee de declarations signees
-    FILE *fic = fopen("declarations.txt","r");
-    CellProtected* LCP = read_protectedCell();
+    CellProtected* LCP = read_protectedCell("declarations.txt");
 
     keepValidCellProtected(LCP);
     printCellProtected(LCP);
     deleteListCellProtected(LCP);
-    fclose(fic);
     return 0;
 }
 

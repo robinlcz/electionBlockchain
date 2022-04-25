@@ -92,8 +92,7 @@ int main(int argc, char** argv){
     generate_random_data(100,2);
 
     // tests exercice 5
-    
-    CellProtected* declarations= read_protectedCell();
+    CellProtected* declarations= read_protectedCell("declaration.txt");
     printf("\nliste declarations:\n");
     printCellProtected(declarations);
     Protected* pl= malloc(sizeof(Protected));
@@ -113,7 +112,7 @@ int main(int argc, char** argv){
     CellKey* candidates= read_public_keys("candidates.txt");
     printf("\ncandidats:\n");
     print_list_keys(candidates);
-    Key* gagnant= compute_winner(declarations,candidates,voters, 20, 200);
+    Key* gagnant= _winner(declarations,candidates,voters, 20, 200);
     char* g=key_to_str(gagnant);
 
     printf("\ngagnant: %s\n",g);

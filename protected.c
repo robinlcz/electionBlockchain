@@ -64,7 +64,7 @@ Protected* str_to_protected(char* str) {
     char mess[30];
     char strsign[50];
     if(sscanf(str,"%s %s %s", strkey,mess,strsign) != 3) {
-        printf("Erreur dans le format de la chaine de caractère \n");
+        printf("[str_to_protected] Erreur dans le format de la chaine de caractère \n");
         return NULL;
     }
     retPro->pKey = str_to_key(strkey);
@@ -74,7 +74,7 @@ Protected* str_to_protected(char* str) {
 }
 
 void freeProtected(Protected* pr) {
-    // libere une declaration signee
+    // On libère une déclaration signée, en libérant tous les champs s'ils sont non null
     if(pr == NULL) {
         return;
     }

@@ -10,7 +10,7 @@ int main() {
     
     Block *block = freadblock(fb);
     Block *block2 = freadblock(fb2);
-
+    
     // Interet : on montre que deux bloques supposés identiques ont un hash différent par le système de blockchain
     CellTree *tree = create_node(block);
     compute_proof_of_work(block,2);
@@ -29,10 +29,23 @@ int main() {
     printf("last node \n");
     print_tree(last_node(tree));
 
-    printCellProtected(tree->block->votes);
-
+    CellProtected* fus = fusion(tree->block->votes,child->block->votes);
+    printf("Affichage fusion\n");
+    printCellProtected(fus);
+    
+    CellTree* T = NULL;
+    remove("Pending_votes.txt");
+    submit_vote(block->votes->data);
+    submit_vote(block->votes->next->data);
+    submit_vote(block->votes->next->next->data);
+    create_block(T,block2->author,2);
+    add_block(2,"Robin.txt");
+    
+    /*
     free(tree->block->author);
     free(child->block->author);
-    delete_tree(tree,true);
+    delete_tree(tree,true); */
+
+
     fclose(fb);
 }

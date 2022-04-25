@@ -56,7 +56,7 @@ Block *freadblock(FILE *f) {
                 break;
             }
 
-            CP = headInsertCellProtected(pr,CP); 
+            CP = endInsertCellProtected(pr,CP); 
         }
     }
 
@@ -95,7 +95,7 @@ char *block_to_str(Block *block) {
     }
     char *retStr = (char *)malloc(sizeof(char)*11000);
     
-    sprintf(retStr,"%s %s\n %s\n %s\n %d\n", strKey,strCP,block->hash,block->previous_hash,block->nonce);
+    sprintf(retStr,"%s %s\n %s\n %s\n %d\n", strKey,strCP,(unsigned char*)block->hash,(unsigned char*)block->previous_hash,block->nonce);
     free(strKey);
     free(strCP);
     return retStr;
@@ -134,10 +134,11 @@ void compute_proof_of_work(Block *b, int d) {
 
     while(true) {
         unsigned char *strCP = (unsigned char*)block_to_str2(b);
-        unsigned char *hash = str_to_hash(strCP);
+        unsigned char *hash = (unsigned char*)str_to_hash(strCP);
         showHash(strCP);
-        if(compte_zeros(hash,d) == true) {
-            b->hash = strdup(str_to_hash(hash));
+        if(compte_zeros(hash,d)) {
+            b->hash = hash;
+            printf("HASH DE MERDE : %s\n", b->hash);
             printf("Hash trouvé : %d \n", b->nonce);
             free(strCP);
             break;
