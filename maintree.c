@@ -3,6 +3,11 @@
 int main() {
     FILE *fb = fopen("temp.txt","r");
     FILE *fb2 = fopen("temp.txt","r");
+    if(fb == NULL || fb2 == NULL) {
+        printf("Erreur dans l'ouverture du fichier temp.txt\n");
+        exit(EXIT_FAILURE);
+    }
+    
     Block *block = freadblock(fb);
     Block *block2 = freadblock(fb2);
 
@@ -12,7 +17,8 @@ int main() {
     block2->previous_hash = strdup(block->hash);
     CellTree *child = create_node(block2);
     compute_proof_of_work(block2,2);
-
+    char *temp = block_to_str(block2);
+    printf("block : %s\n",temp);
     print_tree(tree);
     add_child(tree,child);
     print_tree(tree);

@@ -147,3 +147,23 @@ CellProtected *fusion(CellProtected* listCellProtected, CellProtected* listCellP
     // L'opération pourrait être fait en O(1) avec une liste doublement chainées
     // Nous sommes actuellement en O(len(listCellProtected))
 }
+
+CellProtected* endInsertCellProtected(Protected* pr, CellProtected* listProtected){
+    // Insere en queue de la liste listProtected la déclaration signée pr
+    if(listProtected == NULL) {
+        return create_cell_protected(pr);
+    }
+    if(pr == NULL) {
+        return listProtected;
+    }
+     CellProtected* cour = listProtected;
+     CellProtected* pred = NULL;
+     CellProtected* toInsert = create_cell_protected(pr);
+     while(cour!=NULL){
+         pred = cour; 
+         cour = cour->next;
+     }
+     pred->next=toInsert;
+     return listProtected;
+
+}

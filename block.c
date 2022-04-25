@@ -45,9 +45,6 @@ Block *freadblock(FILE *f) {
     buff[strlen(buff)-1] = '\0';
     authorKey = str_to_key(buff);
 
-    // Récupération des déclarations de votes signées :
-    // CellProtected *last;
-    // CellProtected *CP = last;
     while(1) {
         fgets(buff,256,f);
         buff[strlen(buff)-1] = '\n';
@@ -58,9 +55,8 @@ Block *freadblock(FILE *f) {
                 currentHash = (unsigned char*)buff;
                 break;
             }
-            // last = create_cell_protected(pr);
-            // last = last->next;
-            CP = headInsertCellProtected(pr,CP);  // attention à l'ordre
+
+            CP = headInsertCellProtected(pr,CP); 
         }
     }
 
@@ -93,7 +89,7 @@ char *block_to_str(Block *block) {
 
     while(pointerCP) {
         char *temp = protected_to_str(pointerCP->data);
-        sprintf(strCP,"%s\n%s", temp,strCP);
+        sprintf(strCP,"%s\n%s", strCP,temp);
         pointerCP = pointerCP->next;
         free(temp);
     }
@@ -141,8 +137,7 @@ void compute_proof_of_work(Block *b, int d) {
         unsigned char *hash = str_to_hash(strCP);
         showHash(strCP);
         if(compte_zeros(hash,d) == true) {
-            b->hash = strdup(hash);
-            
+            b->hash = strdup(str_to_hash(hash));
             printf("Hash trouvé : %d \n", b->nonce);
             free(strCP);
             break;
@@ -224,7 +219,6 @@ void delete_block(Block *b) {
         return;
     }
     deleteListCellProtected(b->votes);
-    /*
     if(b->votes != NULL) {
         CellProtected *cour = b->votes;
         CellProtected *pred = NULL;
@@ -233,7 +227,7 @@ void delete_block(Block *b) {
             cour = cour->next;
             free(pred);
         }
-    } */
+    }
     free(b->hash);
     free(b->previous_hash);
     free(b);

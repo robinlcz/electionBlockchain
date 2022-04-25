@@ -1,7 +1,7 @@
 #include "header/block.h"
 #include <time.h>
 
-int main() {
+int main(int argc, char **argv) {
     FILE *f = fopen("temp.txt","r");
     FILE *fp = fopen("res.txt","w");
     FILE *ft = fopen("temps/pow.txt","w");
@@ -18,7 +18,7 @@ int main() {
     double temps_cpu; 
 
 
-    for(int i = 0; i < 3; i++) {
+    for(int i = 0; i < atoi(argv[1]); i++) {
         temps_initial = clock();
         compute_proof_of_work(BlockTest,i);
         temps_final=clock();
