@@ -1,4 +1,6 @@
-all: crabe.o rsa.o main.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o
+all: main mainwin maintree mainblock
+
+main: crabe.o rsa.o main.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o
 	gcc -g -o main main.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o -lm
 
 mainwin: mainwin.o rsa.o crabe.o keys.o sign.o protected.o cellkey.o protectedcell.o hash.o

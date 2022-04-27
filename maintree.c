@@ -13,10 +13,10 @@ int main() {
     
     // Interet : on montre que deux bloques supposés identiques ont un hash différent par le système de blockchain
     CellTree *tree = create_node(block);
-    compute_proof_of_work(block,2);
+    compute_proof_of_work(block,1);
     block2->previous_hash = strdup(block->hash);
     CellTree *child = create_node(block2);
-    compute_proof_of_work(block2,2);
+    compute_proof_of_work(block2,1);
     char *temp = block_to_str(block2);
     printf("block : %s\n",temp);
     print_tree(tree);
@@ -33,13 +33,13 @@ int main() {
     printf("Affichage fusion\n");
     printCellProtected(fus);
     
-    CellTree* T = NULL;
+    CellTree* T = create_node(NULL);
     remove("Pending_votes.txt");
     submit_vote(block->votes->data);
     submit_vote(block->votes->next->data);
     submit_vote(block->votes->next->next->data);
-    create_block(T,block2->author,2);
-    add_block(2,"Robin.txt");
+    create_block(T,block2->author,1);
+    add_block(1,"Robin.txt");
     
     /*
     free(tree->block->author);

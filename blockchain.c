@@ -3,6 +3,7 @@
 #include <dirent.h>
 
 CellTree* create_node(Block *b) {
+    // On initialise un noeud et tous ses champs.
     CellTree *retCT = (CellTree*)malloc(sizeof(CellTree));
     if(retCT == NULL) {
         printf("[create_node] Erreur d'allocation mémoire");
@@ -16,9 +17,11 @@ CellTree* create_node(Block *b) {
 }
 
 int update_height(CellTree *father, CellTree *child) {
+    // Si father ou child est null, alors il n'y a rien à faire. 
     if(father == NULL || child == NULL) {
         return 0;
     }
+    // Sinon on compare la hauteur du père avec celle du fils+1, si la hauteur du père est plus grande rien ne change sinon elle devient celle du fils+1.
     if(father->height < child->height+1) {
         father->height = child->height+1;
         return 1;
@@ -27,14 +30,16 @@ int update_height(CellTree *father, CellTree *child) {
 }
 
 void add_child(CellTree *father, CellTree* child) {
+    // Si father ou child est null il n'y a rien a faire.
     if(father == NULL || child == NULL) { return; }
     CellTree* pointerFather = father;
     CellTree* pointerCT = child;
-    child->father = father;
+    child->father = father; 
+    // Si father n'a pas de fils alors child devient le premier fils de father.
     if(father->firstChild == NULL) {
         father->firstChild = child;
     } else {
-        // On cherche le premier frère libre
+        // Sinon on cherche le premier frère libre dans la liste de la fraterie
         pointerCT = father->firstChild;
         while(pointerCT != NULL) {
             pointerCT = pointerCT->nextBro;
@@ -91,7 +96,14 @@ void delete_tree(CellTree* racine,bool father) {
 
 CellTree* highest_child(CellTree* cell) {
     // On prend les deux premiers fils de cell
+    if(cell == NULL) {
+        return NULL;
+    }
     CellTree* retCellTree = cell->firstChild;
+    // Vérifie si l'arbre possède un fils, si non il est la racine la plus haute
+    if(retCellTree == NULL) {
+        return cell; 
+    }
     CellTree* compCellTree = cell->firstChild->nextBro;
 
     // On compare en gardant le fils avec la plus grande hauteur a chaque itération
@@ -126,106 +138,130 @@ void submit_vote(Protected *p) {
 
 void create_block(CellTree* tree, Key* author, int d){
     Block* newBlock=(Block*)malloc(sizeof(Block));
+    if (newBlock==NULL){
+        printf (" [creat_block] erreur lors du malloc de nexBlock\n");
+        return ;
+    }
+
     CellProtected* cp= read_protectedCell("Pending_votes.txt");
     remove("Pending_votes.txt");
-    printCellProtected(cp);
+    // printCellProtected(cp);
+
+
     newBlock->votes= cp;
+    // on fait une copie de l'auteur que l'on insere dans le nouveau block
     Key* auteur= (Key*)malloc(sizeof(Key));
     init_key(auteur,author->keyValue,author->N);
     newBlock->author=auteur;
-    Block* lastBlock;
-    if (tree==NULL){
-        lastBlock= NULL;
-        newBlock->previous_hash=(unsigned char*)"0";
-        newBlock->hash = (unsigned char*)"0";
+
+    CellTree* t = last_node(tree);
+    Block* lastBlock= t->block;
+   
+    if (lastBlock==NULL){
+        newBlock->previous_hash=strdup((unsigned char*)"0");
+        newBlock->hash = strdup((unsigned char*)"0");
         compute_proof_of_work(newBlock,d);
-        printf("HASH HASH HASH : %s\n", newBlock->hash);
-        tree= create_node(newBlock);
     }else{
-        CellTree* t = last_node(tree);
-        lastBlock=t->block;
         newBlock->previous_hash=lastBlock->hash;
         compute_proof_of_work(newBlock,d);
-        add_child(t,create_node(newBlock));
     }
+    add_child(t,create_node(newBlock));
+   
 
     FILE* f= fopen("Pending_block.txt","w");
     fprintblock(f,newBlock);
     fclose(f);
 }
 
-void add_block(int d , char* name){
-    FILE* f= fopen("Pending_block.txt","r");
-    Block* block= freadblock(f);
-    char nomfic[256];
-    fclose(f);
-    // remove("Pending_block.txt");
-    if(block){
-        if(verify_block(block,d)){
-            strcpy(nomfic,"Blockchain/");
-            strcat(nomfic,name);
-            // on suppose que le repertoire BlockChain existe deja
-            FILE* name= fopen(nomfic,"w");
-            if (name!=NULL){
-                printf("Ya");
-                fprintblock(name,block);
-                fclose(name);
-            } else {printf("Yo\n");}
-        } else {
-            printf("Block non vérifié\n");
-        }
-        // delete_block(block);
+void add_block(int d, char* name){
+    FILE *f1 = fopen("Pending_block.txt","r");
+    Block *b =freadblock(f1);
+    fclose(f1);
+    if(verify_block(b,d)){
+        char str[256];
+        strcpy(str, "Blockchain/");
+        strcat(str, name);
+        FILE *f = fopen(str,"w");
+        fprintblock(f, b);
+        fclose(f);
     }
+    delete_block(b);
+    remove("Pending_block.txt");
 }
+
 
 CellTree* read_tree(){
-    // on suppose que la taille du tableau est superieur au nombre de fichier lu dans Blockchain
-    CellTree** T = (CellTree**)calloc(256,sizeof(CellTree*));
-    DIR *rep = opendir("./Blockchain/");
-    char nomfic[256];
-    FILE* f;
-    int i =0;
-    Block* b;
-    if (rep !=NULL){
-        struct dirent * dir;
-        while (( dir == readdir(rep))) {
-            if (strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..") != 0){
-                printf("Chemin du fichier : ./Blockchain/%s \n", dir->d_name);
-                strcpy(nomfic,"./Blockchain/");
-                strcat(nomfic,dir->d_name);
-                f= fopen(nomfic,"r");
-                if (f!=NULL){
-                    b= freadblock(f);
-                    T[i]= create_node(b);
-                    i++;
-                }
-            }
-            closedir(rep);
+    DIR *repertoire = opendir("./Blockchain/");
+  int cpt = 0, i = 0;
 
+  if (repertoire != NULL) {
+    struct dirent *dir;
 
-        }
+    //on parcourt pour connaitre le nombre de fichier
+    while (dir = readdir(repertoire)){
+      if ((strcmp(dir->d_name, ".") != 0) && (strcmp(dir->d_name, ".."))){
+          cpt++;
+      }
     }
-    int taille= i+1;
-    int j;
-    for( i=0; i<taille; i++){
-        for (j=0; i<taille; j++){
-            if( i!=j && strcmp(T[j]->block->previous_hash,T[i]->block->hash) == 0 ){
-                add_child(T[i],T[j]);
-            }
-            j++;
-        }
-        j=0;
+    printf("cpt=%d\n",cpt);
 
-    }
-    for (int k=0; k<taille; k++){
-        if (T[k]->father==NULL){
-            return T[k];
-        }
-    }
-    printf("il y a une erreur quelque part\n");
-    return NULL;
+    // On réinitialise la position du pointeur du flux dir au debut du repertoire
+    rewinddir(repertoire);
 
+    // On alloue de l'espace mémoire pour les noeuds de l'arbre
+
+    CellTree **tree = (CellTree **)malloc(cpt * sizeof(CellTree *));
+
+    if (tree == NULL){
+      printf("erreur lors du malloc\n");
+      closedir(repertoire);
+      return NULL;
+    }
+
+    Block *block;
+    CellTree *t;
+    int ind = 0;
+    char name[256];
+
+    while (dir = readdir(repertoire)) {
+      if ((strcmp(dir->d_name, ".") != 0) && (strcmp(dir->d_name, ".."))) {
+          strcpy(name, "./Blockchain/");
+          strcat(name, dir->d_name);
+          FILE* fic = fopen(name,"r");
+          block = freadblock(fic);
+          t = create_node(block);
+          tree[ind++] = t;
+        //   remove(name);
+          fclose(fic);
+        }
+     
+    }
+
+    //on parcourt le tableau tree pour relier les enfants avec leur père
+    for (int i = 0; i < cpt; i++)  {
+      for (int j = 0; j < cpt; j++) {
+        //dans le cas où tree[j] est un enfant de tree[i]
+        if ((((tree[j])->block)->previous_hash != NULL) && (strcmp(((tree[j])->block)->previous_hash, ((tree[i])->block)->hash) == 0)) {
+          add_child(tree[i], tree[j]);
+        }
+      }
+    }
+
+    // Dans le cas où on trouve la racine de l'arbre
+    CellTree *temp;
+    int i;
+    for (i = 0; i < cpt; i++) {
+      if ((tree[i])->father == NULL) {
+        temp = tree[i];
+      }
+    }
+
+    closedir(repertoire);
+    free(tree);
+    return temp;
+  }
 }
+
 Key* compute_winner_BT(CellTree* tree, CellKey* candidates, CellKey* voters, int sizeC, int sizeV){
 
     CellProtected* declarations= NULL;

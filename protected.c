@@ -58,7 +58,7 @@ Protected* str_to_protected(char* str) {
     Protected* retPro = (Protected*)malloc(sizeof(Protected));
     if(retPro == NULL) {
         printf("Erreur dans l'allocation mémoire d'un protected\n");
-        return NULL;
+        exit(EXIT_FAILURE);
     }
     char strkey[30];
     char mess[30];

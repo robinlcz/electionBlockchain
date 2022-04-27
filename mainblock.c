@@ -28,14 +28,12 @@ int main(int argc, char **argv) {
         } else {
             printf("Block non vérifié\n");
         }
-        printf("%s\n", block_to_str(BlockTest));
         fprintf(ft,"%d %f\n",i, temps_cpu);
-        // free(BlockTest->hash);
     }
     fclose(f);
     fclose(fp);
     fclose(ft);
-    // free(bts);
-    //free(BlockTest->author);
-    // delete_block(BlockTest);
+    free(bts);
+    free(BlockTest->author);
+    delete_block(BlockTest);
 }

@@ -133,8 +133,7 @@ CellProtected *keepValidCellProtected(CellProtected* listCellProtected) {
             if(ptPrec == NULL) {
                 ptPrec = ptCellProtected;
                 ptCellProtected =ptCellProtected->next;
-                deleteCellProtected(ptPrec);
-                listCellProtected = listCellProtected->next;
+                 listCellProtected = ptCellProtected;
                 continue;
             } else { // Si ce n'est pas le premier élément alors celui qui le précède pointe maintenant sur celui qui le suit.
                 ptPrec->next = ptCellProtected->next;
